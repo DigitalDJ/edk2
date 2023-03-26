@@ -365,6 +365,96 @@ INF MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
 !endif
 
 #
+# Network modules (only available on X64)
+# Available at https://www.realtek.com and https://asix.com.tw
+#
+!if $(NETWORK_ENABLE)
+!if $(ARCH) == IA32
+  # FIXME
+!else
+!if $(NETWORK_RTEK_PCI)
+  FILE DRIVER = D30D5496-6DF9-462D-9B97-0B93F659D1A0 {
+    SECTION PE32 = UefiPayloadPkg/NetworkDrivers/RtkUndiDxe.efi
+  }
+!endif
+!if $(NETWORK_RTEK_USB)
+  FILE DRIVER = 95BA3BCA-F086-4FDA-BBAC-44F5AEE5176B {
+    SECTION PE32 = UefiPayloadPkg/NetworkDrivers/RtkUsbUndiDxe.efi
+  }
+!endif
+!if $(NETWORK_ASIX_USB3)
+  FILE DRIVER = 27E5D3B6-7839-47C2-8618-5D2190729BC7 {
+    SECTION PE32 = UefiPayloadPkg/NetworkDrivers/AX88179X_178A_772D_UEFI_v3.2.0_X64_signed.efi
+  }
+!endif
+!if $(NETWORK_ASIX_USB2)
+  FILE DRIVER = B15239D6-6A01-4808-A0F7-B7F20F073555 {
+    SECTION PE32 = UefiPayloadPkg/NetworkDrivers/AX88772C_772B_772A_UEFI_V2.8.0_X64.efi
+  }
+!endif
+!endif
+!endif
+
+#
+# Security
+#
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  INF  SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+  INF  UefiPayloadPkg/SecureBootEnrollDefaultKeys/SecureBootSetup.inf
+
+  FILE FREEFORM = 76939896-813a-48ac-ad94-47c2cbe1fdad {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/pk.crt
+    SECTION UI = "System76 PK"
+  }
+
+  FILE FREEFORM = 54fbf0d1-687c-4ede-aca4-865ee57b415a {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/kek-microsoft-2011.crt
+    SECTION UI = "Microsoft Corporation KEK CA 2011"
+  }
+
+  FILE FREEFORM = 392a8937-a832-476d-aee9-8557908c3847 {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/kek-microsoft-2023.crt
+    SECTION UI = "Microsoft Corporation KEK 2K CA 2023"
+  }
+
+  FILE FREEFORM = f9fd279e-5222-46d7-81f3-6ad8d5ddfb62 {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/kek-system76.crt
+    SECTION UI = "System76 KEK"
+  }
+
+  FILE FREEFORM = 9c823f53-7cc4-4fa9-82b5-0deb68e855a5 {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/db-windows-pca-2011.crt
+    SECTION UI = "Windows Production PCA 2011"
+  }
+
+  FILE FREEFORM = 90fc49dd-13e0-43a9-bf31-35e308b4e07d {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/db-windows-uefi-2023.crt
+    SECTION UI = "Windows UEFI CA 2023"
+  }
+
+  FILE FREEFORM = b4bf62a6-0f18-48de-bddd-baa5ea50be1a {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/db-microsoft-uefi-2011.crt
+    SECTION UI = "Microsoft Corporation UEFI CA 2011"
+  }
+
+  FILE FREEFORM = 10779d38-00cb-4c02-ba08-a4e4c4c99837 {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/db-microsoft-uefi-2023.crt
+    SECTION UI = "Microsoft UEFI CA 2023"
+  }
+
+  FILE FREEFORM = f953eb13-e915-46d8-afcd-a9d752819ae6 {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/db-system76.crt
+    SECTION UI = "System76 CA"
+  }
+
+  FILE FREEFORM = a226f3fb-0ba3-481c-9d1a-6f2146944e2a {
+    SECTION RAW = UefiPayloadPkg/SecureBootEnrollDefaultKeys/keys/crl.bin
+    SECTION UI = "UEFI Revocation List"
+  }
+
+!endif
+
+#
 # Shell
 #
 !if $(SHELL_TYPE) == BUILD_SHELL
